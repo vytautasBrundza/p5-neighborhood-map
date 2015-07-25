@@ -41,8 +41,12 @@ function LocationFinder() {
     }else{
       groupedLocations[locations.locations[i].type]=[];
       groupedLocations[locations.locations[i].type][0]=locations.locations[i];}
-   locSearchStr.push(locations.locations[i].address.street+" "+locations.locations[i].address.city);
-   console.log(locations.locations[i].address.street+" "+locations.locations[i].address.city);
+      var combinedStr="";
+      if(locations.locations[i].address.name) combinedStr+=locations.locations[i].address.name+" ";
+      if(locations.locations[i].address.street) combinedStr+=locations.locations[i].address.street+" ";
+      if(locations.locations[i].address.city) combinedStr+=locations.locations[i].address.city+" ";
+   locSearchStr.push(combinedStr);
+   console.log(combinedStr);
   };
   console.log(groupedLocations);
 
@@ -65,7 +69,7 @@ function LocationFinder() {
 }
 
 // Define data in a variable for developemnt purposes
-var locationsFile='{"locations":[{"name": "Home", "type": "accomodation", "description": "thats my home", "address":{"street": "14 Glenwood", "city": "London", "postalCode": "N15 3JU"}},{"name": "Edinburgh home", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},{"name": "Work", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
+var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "Arthurs Seat", "city": "Edinburgh", "postalCode": "EH8"}},{"name": "The Meadows", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "The Meadows", "city": "Edinburgh", "postalCode": "EH9 9EX"}},{"name": "Edinburgh home", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},{"name": "Work", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
 
 // Read locations data
 //ReadLocations("data/locations.json", "file");

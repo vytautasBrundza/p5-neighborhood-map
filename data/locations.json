@@ -1,13 +1,23 @@
 {
   "locations":[
   	{
-  	  "name": "Home",
-      "type": "accomodation",
-      "description": "thats my home",
+  	  "name": "Arthur\'s Seat",
+      "type": "leisure",
+      "description": "thats a tall hill in the middle of the town",
       "address": {
-        "street": "14 Glenwood",
-        "city": "London",
-        "postalCode": "N15 3JU"
+        "name": "Arthurs Seat",
+        "city": "Edinburgh",
+        "postalCode": "EH8"
+      }
+    },
+    {
+      "name": "The Meadows",
+      "type": "leisure",
+      "description": "thats a tall hill in the middle of the town",
+      "address": {
+        "name": "The Meadows",
+        "city": "Edinburgh",
+        "postalCode": "EH9 9EX"
       }
     },
     {

@@ -72,57 +72,81 @@ google.maps.event.addListener(marker, 'click', function() {
   mapElement.setCenter(bounds.getCenter());
 }
 
- /*
-  pinPoster() fires off Google place searches for each location
-  */
-  function pinPoster(locs) {
-    // creates a Google place search service object. PlacesService does the work of
-    // actually searching for location data.
-    var service = new google.maps.places.PlacesService(mapElement);
+/*
+pinPoster() fires off Google place searches for each location
+*/
+function pinPoster(locs) {
+  // creates a Google place search service object. PlacesService does the work of
+  // actually searching for location data.
+  var service = new google.maps.places.PlacesService(mapElement);
 
-    // Iterates through the array of locations, creates a search object for each location
-    var len=locs.length;
-    for (var i = 0; i < len; i++) {
-     // the search request object
-      var request = {
-        query: locs[i]
-      };
-      RequestCallback(service, request, i);
-    }
-  }
-
-  function RequestCallback(service, request, id){
-    // Actually searches the Google Maps API for location data and runs the callback
-    // function with the search results after each search.
-    // Had to place in separate function, to lose the scope of pinPoster,
-    //as it was keeping reference to the last value of i for all calls
-    console.log( "request callback "+id);
-    service.textSearch(request, function(response, status) {dataCallback(response, status, id)});
-  }
-
-  /*
-  callback(results, status) makes sure the search returned results for a location.
-  If so, it creates a new map marker for that location.
-  */
-  function dataCallback(results, status, rmId) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      createMapMarker(results[0], rmId);
-    }
-  }
-
-  function FocusMarker(marker){
-    var mId = marker.getAttribute("data-loc-id");
-    console.log("Focus marker "+mId);
-    var mkr=markers.filter(function( m ) {
-      return m.mId == mId;
-    });
-    for (var i = 0; i < markers.length; i++) {
-      if(markers[i].mId ==mId) //mapElement.setCenter(markers[i].position);
-      {bounds  = new google.maps.LatLngBounds();
-      mapElement.panTo(markers[i].getPosition());}
-
+  // Iterates through the array of locations, creates a search object for each location
+  var len=locs.length;
+  for (var i = 0; i < len; i++) {
+   // the search request object
+    var request = {
+      query: locs[i]
     };
+    RequestCallback(service, request, i);
   }
+}
+
+function RequestCallback(service, request, id){
+  // Actually searches the Google Maps API for location data and runs the callback
+  // function with the search results after each search.
+  // Also binds markers in the map with markers in user panel
+  // Had to place in separate function, to lose the scope of pinPoster,
+  // as it was keeping reference to the last value of i for all calls
+  console.log( "request callback "+id);
+  service.textSearch(request, function(response, status) {dataCallback(response, status, id)});
+}
+
+/*
+callback(results, status) makes sure the search returned results for a location.
+If so, it creates a new map marker for that location.
+*/
+function dataCallback(results, status, rmId) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    createMapMarker(results[0], rmId);
+  }
+}
+
+function FocusMarker(marker){
+  var mId = marker.getAttribute("data-loc-id");
+  console.log("Focus marker "+mId);
+  var mkr=markers.filter(function( m ) {
+    return m.mId == mId;
+  });
+  bounds= new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    if(markers[i].mId ==mId){
+      bounds.extend(markers[i].getPosition());
+    }
+  };
+  // fit the map to the new marker
+  FocusBounds();
+  // http://stackoverflow.com/a/4709017/1742303
+  google.maps.event.addListenerOnce(mapElement, 'bounds_changed', function(event) {
+    if (this.getZoom()){
+        this.setZoom(16);
+    }
+  });
+}
+
+function FocusAllMarkers(){
+  bounds= new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    bounds.extend(markers[i].getPosition());
+  };
+  // fit the map to the new marker
+  FocusBounds();
+}
+
+function FocusBounds(){
+  // fit the map to the new marker
+    mapElement.fitBounds(bounds);       // auto-zoom
+    mapElement.panToBounds(bounds);     // auto-center
+}
 
 // Calls the initializeMap() function when the page loads
 //window.addEventListener('load', initializeMap);

@@ -84,9 +84,7 @@ function createMapMarker(placeData) {
       var request = {
         query: locs[i]
       };
-    };
 
-    for (var place in locs) {
       // Actually searches the Google Maps API for location data and runs the callback
       // function with the search results after each search.
       service.textSearch(request, dataCallback);

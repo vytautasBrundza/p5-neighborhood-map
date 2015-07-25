@@ -1,0 +1,34 @@
+{
+  "locations":[
+  	{
+  	  "name": "Home",
+      "type": "accomodation",
+      "description": "thats my home",
+      "address": {
+        "street": "14 Glenwood",
+        "city": "London",
+        "postalCode": "N15 3JU"
+      }
+    },
+    {
+      "name": "Edinburgh home",
+      "type": "accomodation",
+      "description": "thats my current place",
+      "address": {
+        "street": "6 Glenfinlas St",
+        "city": "Edinburgh",
+        "postalCode": "EH3 6AQ"
+      }
+    },
+    {
+      "name": "Work",
+      "type": "employment",
+      "description": "thats my job",
+      "address": {
+        "street": "2 S Gyle Cres",
+        "city": "Edinburgh",
+        "postalCode": "EHQ12 9FQ"
+      }
+    }
+  ]
+}

@@ -11,6 +11,16 @@
       }
     },
     {
+      "name": "Edinburgh Castle",
+      "type": "leisure",
+      "description": "A big castle on top of the hill",
+      "address": {
+        "name": "Edinburgh Castle",
+        "city": "Edinburgh",
+        "postalCode": "EH1 2NG"
+      }
+    },
+    {
       "name": "The Meadows",
       "type": "leisure",
       "description": "thats a tall hill in the middle of the town",

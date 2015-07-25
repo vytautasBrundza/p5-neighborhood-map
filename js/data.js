@@ -58,9 +58,9 @@ function LocationFinder() {
   for (i = 0; i < len; i++) {
     prop = keys[i];
     value = groupedLocations[prop];
-    ul="<h3>"+prop.charAt(0).toUpperCase() + prop.slice(1);+"</h3><ul class='loc-group'>"
+    ul="<h3>"+prop.charAt(0).toUpperCase() + prop.slice(1)+"</h3><ul class='loc-group'>"
     for (var j = 0; j < value.length; j++) {
-      ul+="<li data-loc-id="+value[j].locId+" onclick='FocusMarker(this);''>"+value[j].name+"</li>";
+      ul+="<li data-loc-id="+value[j].locId+" onclick='FocusMarker(this);'>"+value[j].name+"</li>";
     };
     ul+="</ul>";
     panel.innerHTML+=ul;
@@ -69,8 +69,32 @@ function LocationFinder() {
 }
 
 // Define data in a variable for developemnt purposes
-var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "Arthurs Seat", "city": "Edinburgh", "postalCode": "EH8"}},{"name": "The Meadows", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "The Meadows", "city": "Edinburgh", "postalCode": "EH9 9EX"}},{"name": "Edinburgh home", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},{"name": "Work", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
+var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "Arthurs Seat", "city": "Edinburgh", "postalCode": "EH8"}},{"name": "Edinburgh Castle", "type": "leisure", "description": "A big castle on top of the hill", "address":{"name": "Edinburgh Castle", "city": "Edinburgh", "postalCode": "EH1 2NG"}},{"name": "The Meadows", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "The Meadows", "city": "Edinburgh", "postalCode": "EH9 9EX"}},{"name": "Edinburgh home", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},{"name": "Work", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
 
 // Read locations data
 //ReadLocations("data/locations.json", "file");
 ReadLocations(locationsFile, "variable");
+
+// Run the search against data
+function SearchLocations(){
+  var keyword=document.getElementById("search-field").value.toLowerCase();
+  // only search if keyword is 2 characters or more
+  if(keyword.length<2){
+    document.getElementById("search-results").innerHTML="";
+    return;
+  }
+// reset results
+  var results="";
+  for (var j=0; j<locations.locations.length; j++) {
+      if (locations.locations[j].name.toLowerCase().match(keyword)) results+="<li data-loc-id="+locations.locations[j].locId+" onclick='FocusMarker(this);' >"+locations.locations[j].name+"</li>";
+      if (locations.locations[j].description.toLowerCase().match(keyword)) results+="<li data-loc-id="+locations.locations[j].locId+" onclick='FocusMarker(this);' >"+locations.locations[j].description+"</li>";
+  }
+  // add results to the page
+  document.getElementById("search-results").innerHTML=(results.length==0)?"<li>No results found</li>":results;
+}
+
+// Reset search box and results
+function ClearSearch(){
+  document.getElementById("search-field").value="";
+  document.getElementById("search-results").innerHTML="";
+}

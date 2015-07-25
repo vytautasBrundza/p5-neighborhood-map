@@ -34,6 +34,7 @@ function LocationFinder() {
   var locSearchStr = [];
   var len=locations.locations.length;
   for (var i = 0; i < len; i++) {
+    locations.locations[i].locId=i;
     //if(typeof(groupedLocations[locations.locations[i].type]) !== 'undefined'){
       if(groupedLocations[locations.locations[i].type] && groupedLocations[locations.locations[i].type].constructor === Array){
       groupedLocations[locations.locations[i].type].push(locations.locations[i]);
@@ -43,7 +44,7 @@ function LocationFinder() {
    locSearchStr.push(locations.locations[i].address.street+" "+locations.locations[i].address.city);
    console.log(locations.locations[i].address.street+" "+locations.locations[i].address.city);
   };
-  //console.log(groupedLocations);
+  console.log(groupedLocations);
 
   var panel=document.getElementById("user-panel");
   var ul;
@@ -55,7 +56,7 @@ function LocationFinder() {
     value = groupedLocations[prop];
     ul="<h3>"+prop.charAt(0).toUpperCase() + prop.slice(1);+"</h3><ul class='loc-group'>"
     for (var j = 0; j < value.length; j++) {
-      ul+="<li>"+value[j].name+"</li>";
+      ul+="<li data-loc-id="+value[j].locId+" onclick='FocusMarker(this);''>"+value[j].name+"</li>";
     };
     ul+="</ul>";
     panel.innerHTML+=ul;

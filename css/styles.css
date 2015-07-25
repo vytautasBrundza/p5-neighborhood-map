@@ -1,0 +1,14 @@
+html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+
+img{
+max-width:100%;
+}
+
+.center{
+text-align: center;
+}
+
+@media screen and (min-width: 500px) {
+	#map-container{margin-left: 200px;}
+	#user-panel{width:200px; float:left;}
+}

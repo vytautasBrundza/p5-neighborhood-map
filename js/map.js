@@ -54,10 +54,10 @@ function createMapMarker(placeData) {
     content: name
   });
 
-  // hmmmm, I wonder what this is about...
-  google.maps.event.addListener(marker, 'click', function() {
-    //infoWindow.open(mapElement,marker);
+google.maps.event.addListener(marker, 'click', function() {
+    infoWindow.open(mapElement, this);
   });
+
 
   // this is where the pin actually gets added to the map.
   // bounds.extend() takes in a map location object

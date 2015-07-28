@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>The neighborhood map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/styles.css">
@@ -14,7 +15,7 @@
         <h3 onclick="FocusAllMarkers();" id="all-markers">All markers</h3>
         <div id="search-bar">
             <input type="text" name="search_locations" id="search-field" placeholder="Search" onkeyup="SearchLocations()">
-            <img id="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="ClearSearch()"/>
+            <img id="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="ClearSearch()" alt="clear search field button"/>
         </div>
         <ul id="search-results"></ul>
     </div>

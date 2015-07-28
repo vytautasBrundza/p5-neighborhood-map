@@ -56,7 +56,7 @@ console.log("create marker "+mId);
   // or hover over a pin on a map. They usually contain more information
   // about a location.
   var infoWindow = new google.maps.InfoWindow({
-    content: "no content found"
+    content: "No content found in WikiMedia"
   });
 
   SearchWiki(locations.locations[mId], infoWindow);
@@ -100,7 +100,7 @@ function RequestCallback(service, request, id){
   // Had to place in separate function, to lose the scope of pinPoster,
   // as it was keeping reference to the last value of i for all calls
   console.log( "request callback "+id);
-  service.textSearch(request, function(response, status) {dataCallback(response, status, id)});
+  service.textSearch(request, function(response, status) {dataCallback(response, status, id);});
 }
 
 /*
@@ -124,7 +124,7 @@ function FocusMarker(marker){
     if(markers[i].mId ==mId){
       bounds.extend(markers[i].getPosition());
     }
-  };
+  }
   // fit the map to the new marker
   FocusBounds();
   // http://stackoverflow.com/a/4709017/1742303
@@ -139,7 +139,7 @@ function FocusAllMarkers(){
   bounds= new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
     bounds.extend(markers[i].getPosition());
-  };
+  }
   // fit the map to the new marker
   FocusBounds();
 }

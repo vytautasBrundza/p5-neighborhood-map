@@ -56,10 +56,12 @@ console.log("create marker "+mId);
   // or hover over a pin on a map. They usually contain more information
   // about a location.
   var infoWindow = new google.maps.InfoWindow({
-    content: name
+    content: "no content found"
   });
 
-google.maps.event.addListener(marker, 'click', function() {
+  SearchWiki(locations.locations[mId], infoWindow);
+
+  google.maps.event.addListener(marker, 'click', function() {
     infoWindow.open(mapElement, this);
   });
 

@@ -98,3 +98,155 @@ function ClearSearch(){
   document.getElementById("search-field").value="";
   document.getElementById("search-results").innerHTML="";
 }
+
+// Wikipedia search
+var wikiUrl="https://en.wikipedia.org/w/api.php";
+var wikiSearchUrl="https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
+
+// doesn't work because of cross origin requests are not allowed
+function SearchWiki(keyword)
+{
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open( "GET", wikiSearchUrl+encodeURIComponent(keyword), false );
+  xmlHttp.send( null );
+  var JSONresponse=JSON.parse(xmlHttp.responseText);
+  console.log(JSONresponse.query.search[0].snippet);
+  return JSONresponse.query.search[0].snippet;
+}
+
+// Version 2 using CORS (http://www.html5rocks.com/en/tutorials/cors/)
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  xhr.Headers.Add("origin", "kiaurutis.co.nf");
+  if ("withCredentials" in xhr) {
+
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    xhr.open(method, url, true);
+
+  } else if (typeof XDomainRequest != "undefined") {
+
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+
+  } else {
+
+    // Otherwise, CORS is not supported by the browser.
+    xhr = null;
+
+  }
+  return xhr;
+}
+
+var xhr = createCORSRequest('GET', url);
+if (!xhr) {
+  throw new Error('CORS not supported');
+}
+
+xhr.onload = function() {
+ var responseText = xhr.responseText;
+ console.log(responseText);
+ // process the response.
+};
+
+xhr.onerror = function() {
+  console.log('There was an error!');
+};
+
+function SearchWiki2(keyword) {
+
+  var url = wikiUrl+encodeURIComponent(keyword);
+
+  var xhr = createCORSRequest('GET', url);
+  if (!xhr) {
+    alert('CORS not supported');
+    return;
+  }
+
+  // Response handlers.
+  xhr.onload = function() {
+    var JSONresponse=JSON.parse(xhr.responseText);
+    console.log(JSONresponse.query.search[0].snippet);
+    return JSONresponse.query.search[0].snippet;
+  };
+
+  xhr.onerror = function() {
+    alert('Woops, there was an error making the request.');
+  };
+
+  xhr.send();
+}
+
+{
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open( "GET", wikiSearchUrl+encodeURIComponent(keyword), false );
+  xmlHttp.send( null );
+
+}
+
+// Wiki search 3 using JSONP handler (https://www.mediawiki.org/wiki/API:Search_and_discovery#JavaScript)
+
+function SearchWiki3(keyword){
+
+  mw.mwQuery("https://en.wikipedia.org/w/api.php",encodeURIComponent(keyword));
+}
+
+var mw;
+(function (mw) {
+
+  /**
+   * Query a MediaWiki api.php instance with the given options
+   */
+  function mwQuery(endpoint, options) {
+
+    /**
+     * Create a uniquely-named callback that will process the JSONP results
+     */
+    var createCallback = function (k) {
+      var i = 1;
+      var callbackName;
+      do {
+        callbackName = 'callback' + i;
+        i = i + 1;
+      } while (window[callbackName])
+      window[callbackName] = k;
+      return callbackName;
+    }
+
+    /**
+     * Flatten an object into a URL query string.
+     * For example: { foo: 'bar', baz: 42 } becomes 'foo=bar&baz=42'
+     */
+    var queryStr = function (options) {
+      var query = [];
+      for (var i in options) {
+        if (options.hasOwnProperty(i)) {
+          query.push(encodeURIComponent(i) + '=' + encodeURIComponent(options[i]));
+        }
+      }
+      return query.join('&');
+    }
+
+    /**
+     * Build a function that can be applied to a callback.  The callback processes
+     * the JSON results of the API call.
+     */
+    return function (k) {
+      options.format = 'json';
+      options.callback = createCallback(k);
+      var script = document.createElement('script');
+      script.src = endpoint + '?' + queryStr(options);
+      var head = document.getElementsByTagName('head')[0];
+      head.appendChild(script);
+    };
+
+  }
+
+  mw.api = {
+    query: mwQuery,
+  };
+
+})(mw || (mw = {}));

@@ -45,7 +45,7 @@ body{
 	}
 }
 
-#user-panel h3{
+.results-group-heading{
 	margin-bottom:0;
 	padding:0.2em 1em;
 	background-color: #DBBF8F;
@@ -57,13 +57,16 @@ ul{
 }
 
 li{
-	background-color:#C5DFAF;
 	list-style: none;
+}
+
+li.location-item{
+	background-color:#C5DFAF;
 	text-align: center;
 	padding:0.3em 0;
 }
 
-li:hover{
+li.result:hover{
 	background-color:#AEC597;
 }
 

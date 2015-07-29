@@ -1,3 +1,68 @@
+//  View Model
+
+// all locations array
+/*var allLocations=function(){
+  var panel={};
+  var groups=[];
+  panel.searchBox=function{
+    var box={};
+    box.keyword="";
+    box.results=[];
+    boc.Clear=function(){
+      this.keyword="";
+      this.results=[];
+    }
+  }
+}
+
+var allLocations=function(){
+  var groups=[];
+  groups.AddLocationGroup=function(name, locations){
+    this.push(name, locations);
+  }.bind(this);
+  groups.AddLocationGroup("locations group",["loc 1","loc 2"]);
+}
+
+// Define a "LocationGroup" class that tracks its own name and children, and has a method to add a new child
+var LocationGroup=function(name, locations) {
+    this.name=name;
+    this.locations=ko.observableArray(locations);
+
+    this.addLocation=function(newLocation) {
+        this.locations.push(newLocation);
+    }.bind(this);
+}
+
+// The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
+var viewModel={
+    allLocations: allLocations,
+    showRenderTimes: ko.observable(false)
+};
+
+ko.applyBindings(viewModel);*/
+
+// Define a "Person" class that tracks its own name and children, and has a method to add a new child
+var LocationGroup = function(name, children) {
+    this.name = name;
+    this.children = ko.observableArray(children);
+
+    this.addChild = function(newLoc) {
+        this.children.push(newLoc);
+    }.bind(this);
+}
+
+// The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
+var viewModel = {
+    locationGroup: [
+        new LocationGroup("Accomodation", ["Home"]),
+        new LocationGroup("Work", ["Tesco"]),
+        new LocationGroup("Leisure", ["Edinburgh Castle", "Park"])
+        ],
+    showRenderTimes: ko.observable(false)
+};
+
+ko.applyBindings(viewModel);
+
 // *** DATA MANIPULATION
 var locations=[];
 var locationServiceData=[];
@@ -32,7 +97,7 @@ var groupedLocations={};
 
 function LocationFinder() {
   console.log("Read locations and add to the user panel");
-  var locSearchStr = [];
+  var locSearchStr= [];
   var len=locations.locations.length;
   for (var i = 0; i < len; i++) {
     locations.locations[i].locId=i;

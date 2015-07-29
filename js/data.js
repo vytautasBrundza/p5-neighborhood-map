@@ -1,16 +1,29 @@
 //  View Model
 
 // search box
-
+/*
 var SearchBox=function(){
-  this.keyword="";
+  this.keyword=ko.observable("");
   this.results=ko.observableArray();
   this.Clear=function(){
-    this.keyword="";
-    this.results=ko.observableArray();
+    this.keyword=ko.observable("");
+    this.results=ko.observableArray([]);
   }.bind(this);
   return this;
-}
+};*/
+
+var SearchBox = function() {
+    this.items = ko.observableArray(items);
+    this.itemToAdd = ko.observable("");
+    this.addItem = function() {
+        if (this.itemToAdd() != "") {
+            this.items.push(this.itemToAdd()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+            this.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+        }
+    }.bind(this);  // Ensure that "this" is always this view model
+};
+
+ko.applyBindings(new SearchBox());
 
 // location model
 var Location=function(name, type, id) {
@@ -27,7 +40,7 @@ var Location=function(name, type, id) {
     }
   }
   return this;
-}
+};
 
 // Define a "LocationGroup" class that tracks its own name and children, and has a method to add a new child
 var LocationGroup = function(name, children) {
@@ -38,7 +51,7 @@ var LocationGroup = function(name, children) {
         this.children.push(newLoc);
     }.bind(this);
     return this;
-}
+};
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
@@ -129,9 +142,9 @@ function SearchLocations(){
 
 // Reset search box and results
 function ClearSearch(){
-  viewModel.searchBox.keyword="";
-  document.getElementById("search-field").value="";
-  document.getElementById("search-results").innerHTML="";
+  viewModel.searchBox.keyword=ko.observable("");
+  //document.getElementById("search-field").value="";
+  //document.getElementById("search-results").innerHTML="";
 }
 
 // Wikipedia search (http://stackoverflow.com/a/3873658/1742303)
@@ -155,19 +168,19 @@ function SearchWiki(location)
 
 function AddLocation(loc){
   var len= viewModel.locationGroup().length;
-  console.log(len);
+  //console.log(len);
   for (var i = 0; i < len; i++) {
-    console.log("name: "+viewModel.locationGroup()[i].name());
-    console.log("type: "+loc.type);
+    //console.log("name: "+viewModel.locationGroup()[i].name());
+    //console.log("type: "+loc.type);
     if(viewModel.locationGroup()[i].name()==loc.type) {
-      console.log("adding child to existing group "+loc.type);
+      //console.log("adding child to existing group "+loc.type);
       viewModel.locationGroup()[i].addChild(loc);
       return;
     }
   };
-  console.log("adding child to a new group "+loc.type);
-  console.log(viewModel.locationGroup());
+  //console.log("adding child to a new group "+loc.type);
+  //console.log(viewModel.locationGroup());
   viewModel.locationGroup.push(new LocationGroup(loc.type,[loc]));
-  console.log(viewModel.locationGroup());
-  console.log(viewModel.locationGroup().length);
+  //console.log(viewModel.locationGroup());
+  //console.log(viewModel.locationGroup().length);
 }

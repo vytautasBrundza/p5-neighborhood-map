@@ -154,20 +154,20 @@ function SearchWiki(location)
 }
 
 function AddLocation(loc){
-  var len= viewModel.locationGroup.length;
+  var len= viewModel.locationGroup().length;
   console.log(len);
   for (var i = 0; i < len; i++) {
-    console.log("name: "+viewModel.locationGroup[i].name);
+    console.log("name: "+viewModel.locationGroup()[i].name());
     console.log("type: "+loc.type);
-    if(viewModel.locationGroup[i] && viewModel.locationGroup[i].name==loc.type) {
+    if(viewModel.locationGroup()[i].name()==loc.type) {
       console.log("adding child to existing group "+loc.type);
-      viewModel.locationGroup[i].addChild(loc);
+      viewModel.locationGroup()[i].addChild(loc);
       return;
     }
   };
   console.log("adding child to a new group "+loc.type);
-  //console.log(viewModel.locationGroup);
+  console.log(viewModel.locationGroup());
   viewModel.locationGroup.push(new LocationGroup(loc.type,[loc]));
-  //console.log(viewModel.locationGroup);
-  //console.log(viewModel.locationGroup.length);
+  console.log(viewModel.locationGroup());
+  console.log(viewModel.locationGroup().length);
 }

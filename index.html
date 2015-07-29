@@ -23,7 +23,7 @@
           <li>
               <h3 data-bind="text: name" class="results-group-heading"> </h3>
               <ul data-bind="foreach: children">
-                  <li data-bind="text: name" class="location-item" onclick="FocusMarker(this);"></li>
+                  <li data-bind="text: name, attr: { 'data-loc-id': locId}" class="location-item" onclick="FocusMarker(this);"></li>
               </ul>
           </li>
       </ul>

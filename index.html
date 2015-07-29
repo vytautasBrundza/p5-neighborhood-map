@@ -17,13 +17,13 @@
           <input type="text" name="search_locations" id="search-field" placeholder="Search" data-bind='value: searchBox.keyword, valueUpdate: "afterkeydown"'>
           <img id="clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear()" alt="clear search field button"/>
       </div>
-      <ul id="search-results" data-bind="foreach: searchBox.results">
-          <li data-bind="text: name, attr:{ 'data-loc-id': id}" onclick="FocusMarker(this);"></li>
+      <ul data-bind="foreach: results">
+          <li data-bind="text: name, attr:{ 'data-loc-id': id}" class="location-item" onclick="FocusMarker(this);"></li>
       </ul>
 
       <ul data-bind="foreach: locationGroup">
           <li>
-              <h3 data-bind="text: name" class="results-group-heading"> </h3>
+              <h3 data-bind="text: name" class="results-group-heading"></h3>
               <ul data-bind="foreach: children">
                   <li data-bind="text: name, attr: { 'data-loc-id': locId}" class="location-item" onclick="FocusMarker(this);"></li>
               </ul>

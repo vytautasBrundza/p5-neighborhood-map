@@ -23,12 +23,10 @@
           <li>
               <h3 data-bind="text: name" class="results-group-heading"> </h3>
               <ul data-bind="foreach: children">
-                  <li data-bind="text: $data" class="location-item" onclick="FocusMarker(this);"></li>
+                  <li data-bind="text: name" class="location-item" onclick="FocusMarker(this);"></li>
               </ul>
           </li>
       </ul>
-
-
     </div>
     <div id="map-canvas"></div>
   <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>

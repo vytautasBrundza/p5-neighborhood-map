@@ -26,7 +26,7 @@ function InitializeMap() {
 
 // pinPoster(locations) creates pins on the map for each location in
   // the locations array
-  //pinPoster(LocationFinder());
+  pinPoster(LocationFinder());
 }
 
 /*

@@ -1,64 +1,49 @@
 //  View Model
 
-// all locations array
-/*var allLocations=function(){
-  var panel={};
-  var groups=[];
-  panel.searchBox=function{
-    var box={};
-    box.keyword="";
-    box.results=[];
-    boc.Clear=function(){
-      this.keyword="";
-      this.results=[];
-    }
-  }
+// search box
+
+var SearchBox=function(){
+  this.keyword="";
+  this.results=ko.observableArray();
+  this.Clear=function(){
+    this.keyword="";
+    this.results=ko.observableArray();
+  }.bind(this);
+  return this;
 }
 
-var allLocations=function(){
-  var groups=[];
-  groups.AddLocationGroup=function(name, locations){
-    this.push(name, locations);
-  }.bind(this);
-  groups.AddLocationGroup("locations group",["loc 1","loc 2"]);
+// location model
+var Location=function(name, type, id) {
+  this.name=ko.observable(name);
+  this.type=type;
+  this.description=ko.observable("");
+  this.locId=ko.observable(id);
+  this.marker={};
+  this.getDescription=function(){
+    if(this.description==""){
+      SearchWiki(this);
+    }else{
+      return this.description;
+    }
+  }
+  return this;
 }
 
 // Define a "LocationGroup" class that tracks its own name and children, and has a method to add a new child
-var LocationGroup=function(name, locations) {
-    this.name=name;
-    this.locations=ko.observableArray(locations);
-
-    this.addLocation=function(newLocation) {
-        this.locations.push(newLocation);
-    }.bind(this);
-}
-
-// The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
-var viewModel={
-    allLocations: allLocations,
-    showRenderTimes: ko.observable(false)
-};
-
-ko.applyBindings(viewModel);*/
-
-// Define a "Person" class that tracks its own name and children, and has a method to add a new child
 var LocationGroup = function(name, children) {
-    this.name = name;
+    this.name = ko.observable(name);
     this.children = ko.observableArray(children);
 
     this.addChild = function(newLoc) {
         this.children.push(newLoc);
     }.bind(this);
+    return this;
 }
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-    locationGroup: [
-        new LocationGroup("Accomodation", ["Home"]),
-        new LocationGroup("Work", ["Tesco"]),
-        new LocationGroup("Leisure", ["Edinburgh Castle", "Park"])
-        ],
-    showRenderTimes: ko.observable(false)
+  searchBox: new SearchBox(),
+  locationGroup: ko.observableArray()
 };
 
 ko.applyBindings(viewModel);
@@ -96,44 +81,24 @@ function ReadLocations(source, source_type)
 var groupedLocations={};
 
 function LocationFinder() {
+  var locSearchStr=[];
   console.log("Read locations and add to the user panel");
-  var locSearchStr= [];
   var len=locations.locations.length;
   for (var i = 0; i < len; i++) {
     locations.locations[i].locId=i;
-      // Check if object is array and push
-    if(groupedLocations[locations.locations[i].type] && groupedLocations[locations.locations[i].type].constructor === Array){
-      groupedLocations[locations.locations[i].type].push(locations.locations[i]);
-    }else{
-      // Force the object to be array! ;[
-      groupedLocations[locations.locations[i].type]=[];
-      groupedLocations[locations.locations[i].type][0]=locations.locations[i];
-    }
     // add multiple values to the string, if they are defined
     var combinedStr="";
     if(locations.locations[i].address.name) combinedStr+=locations.locations[i].address.name+" ";
     if(locations.locations[i].address.street) combinedStr+=locations.locations[i].address.street+" ";
     if(locations.locations[i].address.city) combinedStr+=locations.locations[i].address.city+" ";
+    // prepare a string for search service
+    locations.locations[i].searchString=combinedStr;
+    var newloc= new Location(locations.locations[i].name,locations.locations[i].type, i);
+    AddLocation(newloc);
+    console.log(newloc);
     locSearchStr.push(combinedStr);
-    console.log(combinedStr);
   }
-
-  // inject locations as buttons into the page
-  var panel=document.getElementById("user-panel");
-  var ul;
-  var keys = Object.keys(groupedLocations);
-  var len = keys.length;
-  var prop;
-  for (i = 0; i < len; i++) {
-    prop = keys[i];
-    value = groupedLocations[prop];
-    ul="<h3>"+prop.charAt(0).toUpperCase() + prop.slice(1)+"</h3><ul class='loc-group'>";
-    for (var j = 0; j < value.length; j++) {
-      ul+="<li data-loc-id="+value[j].locId+" onclick='FocusMarker(this);'>"+value[j].name+"</li>";
-    }
-    ul+="</ul>";
-    panel.innerHTML+=ul;
-  }
+  console.log(viewModel.locationGroup);
   return locSearchStr;
 }
 
@@ -164,6 +129,7 @@ function SearchLocations(){
 
 // Reset search box and results
 function ClearSearch(){
+  viewModel.searchBox.keyword="";
   document.getElementById("search-field").value="";
   document.getElementById("search-results").innerHTML="";
 }
@@ -172,7 +138,7 @@ function ClearSearch(){
 // base search string
 var wikiSearchUrl="https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
 
-function SearchWiki(location, infowindow)
+function SearchWiki(location)
 {
   var keyword=location.name;
   var description="no description found";
@@ -183,27 +149,25 @@ function SearchWiki(location, infowindow)
       string=string.slice(string.indexOf(".")+2,string.length);
     if(string.indexOf("redirects here")!=-1)
       string=string.slice(string.indexOf(".")+2,string.length);
-    infowindow.content= string;
+    location.description= string;
   });
+}
 
-  /* don't work because of wrong MIME type
-  $.ajax({
-      url: wikiSearchUrl+encodeURIComponent(keyword),
-      dataType: 'jsonp',
-      success: function(data){
-          var dataWeGotViaJsonp=JSON.parse(data);
-          var len = dataWeGotViaJsonp.length;
-          for(var i=0;i<len;i++){
-              console.log(data[i]);
-          }
-      }
-  });
-*/
-/* don't work because of cross domain request
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "GET", wikiSearchUrl+encodeURIComponent(keyword), false );
-  xmlHttp.send( null );
-  var JSONresponse=JSON.parse(xmlHttp.responseText);
-  console.log(JSONresponse.query.search[0].snippet);
-  return JSONresponse.query.search[0].snippet;*/
+function AddLocation(loc){
+  var len= viewModel.locationGroup.length;
+  console.log(len);
+  for (var i = 0; i < len; i++) {
+    console.log("name: "+viewModel.locationGroup[i].name);
+    console.log("type: "+loc.type);
+    if(viewModel.locationGroup[i] && viewModel.locationGroup[i].name==loc.type) {
+      console.log("adding child to existing group "+loc.type);
+      viewModel.locationGroup[i].addChild(loc);
+      return;
+    }
+  };
+  console.log("adding child to a new group "+loc.type);
+  //console.log(viewModel.locationGroup);
+  viewModel.locationGroup.push(new LocationGroup(loc.type,[loc]));
+  //console.log(viewModel.locationGroup);
+  //console.log(viewModel.locationGroup.length);
 }

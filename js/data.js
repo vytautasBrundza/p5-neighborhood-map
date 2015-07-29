@@ -1,7 +1,7 @@
 //  View Model
 
 // search box
-
+/*
 var SearchBox=function(){
   this.keyword="";
   this.results=ko.observableArray();
@@ -10,7 +10,7 @@ var SearchBox=function(){
     this.results=ko.observableArray();
   }.bind(this);
   return this;
-}
+}*/
 
 // location model
 var Location=function(name, type, id) {
@@ -42,7 +42,7 @@ var LocationGroup = function(name, children) {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-  searchBox: new SearchBox(),
+  //searchBox: new SearchBox(),
   locationGroup: ko.observableArray()
 };
 

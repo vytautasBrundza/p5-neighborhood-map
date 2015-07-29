@@ -1,29 +1,57 @@
-//  View Model
+//  View Models
 
-// search box
-/*
-var SearchBox=function(){
-  this.keyword="";
-  this.results=ko.observableArray();
-  this.Clear=function(){
-    this.keyword="";
-    this.results=ko.observableArray();
-  }.bind(this);
+// Result model (represented in the list)
+var Result=function(name, id){
+  this.name=ko.observable(name);
+  this.id=ko.observable(id);
   return this;
-}*/
+}
 
-var SearchBox = function(items) {
-    this.items = ko.observableArray(items);
-    this.itemToAdd = ko.observable("");
-    this.addItem = function() {
-      console.log(this.itemToAdd());
-        if (this.itemToAdd() != "") {
-            this.items.push(this.itemToAdd()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
-            this.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
-        }
-    }.bind(this);  // Ensure that "this" is always this view model
+// Search box model
+var SearchBox = function() {
+  this.results = ko.observableArray();
+  this.keyword = ko.observable("");
+
+  // perform a search using the keyword in the input field
+  this.Search = function() {
+    //console.log("search: "+this.keyword());
+    if (this.keyword().lenght>1) {
+      this.items.push(this.keyword()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+    }
+  }.bind(this);  // Ensure that "this" is always this view model
+
+  // clear the search results
+  this.Clear = function() {
+    this.keyword("");
+    this.results = ko.observableArray();
+  }.bind(this);  // Ensure that "this" is always this view model
+
+  // perform a new search whenever the keyword changes
+  this.keyword.subscribe(function(newValue){
+    viewModel.searchBox.results=ko.observableArray();
+    // only search if keyword is 2 characters or more
+    if(newValue.length<2){
+      viewModel.searchBox.Search();
+      return;
+    }
+    // check for value matches in the locations data model object
+    var results=0;
+    for (var j=0; j<locations.locations.length; j++) {
+      if (locations.locations[j].name.toLowerCase().match(newValue)) {
+        viewModel.searchBox.results().push(new Result(locations.locations[j].name,locations.locations[j].locId));
+        results++;
+      }
+      if (locations.locations[j].description.toLowerCase().match(newValue)){
+        viewModel.searchBox.results().push(new Result(locations.locations[j].description,locations.locations[j].locId));
+        results++;
+      }
+    }
+    console.log(viewModel.searchBox.results());
+    // if no matches were found, pass "not found" as a result
+    if(results>0) return;
+    viewModel.searchBox.results().push(new Result("No results found",-1));
+    });
 };
-
 
 // location model
 var Location=function(name, type, id) {
@@ -53,12 +81,13 @@ var LocationGroup = function(name, children) {
     return this;
 }
 
-// The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
+// The view model is an abstract description of the state of the UI
 var viewModel = {
-  searchBox: new SearchBox(["Alpha", "Beta", "Gamma"]),
+  searchBox: new SearchBox(),
   locationGroup: ko.observableArray()
 };
 
+// apply bindings
 ko.applyBindings(viewModel);
 
 // *** DATA MANIPULATION
@@ -95,7 +124,7 @@ var groupedLocations={};
 
 function LocationFinder() {
   var locSearchStr=[];
-  console.log("Read locations and add to the user panel");
+  //console.log("Read locations and add to the user panel");
   var len=locations.locations.length;
   for (var i = 0; i < len; i++) {
     locations.locations[i].locId=i;
@@ -108,10 +137,10 @@ function LocationFinder() {
     locations.locations[i].searchString=combinedStr;
     var newloc= new Location(locations.locations[i].name,locations.locations[i].type, i);
     AddLocation(newloc);
-    console.log(newloc);
+    //console.log(newloc);
     locSearchStr.push(combinedStr);
   }
-  console.log(viewModel.locationGroup);
+  //console.log(viewModel.locationGroup);
   return locSearchStr;
 }
 
@@ -121,7 +150,7 @@ var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "
 // Read locations data
 // ReadLocations("data/locations.json", "file"); // uncomment to use data file
 ReadLocations(locationsFile, "variable");
-
+/*
 // Run the search against data
 function SearchLocations(){
   var keyword=document.getElementById("search-field").value.toLowerCase();
@@ -138,14 +167,7 @@ function SearchLocations(){
   }
   // add results to the page
   document.getElementById("search-results").innerHTML=(results.length===0)?"<li>No results found</li>":results;
-}
-
-// Reset search box and results
-function ClearSearch(){
-  viewModel.searchBox.keyword="";
-  document.getElementById("search-field").value="";
-  document.getElementById("search-results").innerHTML="";
-}
+}*/
 
 // Wikipedia search (http://stackoverflow.com/a/3873658/1742303)
 // base search string
@@ -173,7 +195,7 @@ function AddLocation(loc){
     //console.log("name: "+viewModel.locationGroup()[i].name());
     //console.log("type: "+loc.type);
     if(viewModel.locationGroup()[i].name()==loc.type) {
-      console.log("adding child to existing group "+loc.type);
+      //console.log("adding child to existing group "+loc.type);
       viewModel.locationGroup()[i].addChild(loc);
       return;
     }

@@ -10,22 +10,16 @@
     </script>
   </head>
   <body>
-    <div id="user-panel">
+    <div class="user-panel">
       <h2>Select location</h2>
-      <!--<h3 onclick="FocusAllMarkers();" id="all-markers" class="results-group-heading">All markers</h3>
-      <div id="search-bar">
-          <input type="text" name="search_locations" id="search-field" placeholder="Search" onkeyup="SearchLocations()">
-          <img id="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="ClearSearch()" alt="clear search field button"/>
+      <h3 onclick="FocusAllMarkers();" class="results-group-heading all-markers">All markers</h3>
+      <div class="search-bar">
+          <input type="text" name="search_locations" id="search-field" placeholder="Search" data-bind='value: searchBox.keyword, valueUpdate: "afterkeydown"'>
+          <img id="clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear()" alt="clear search field button"/>
       </div>
-      <ul id="search-results"></ul>-->
-
-      <form data-bind="submit: searchBox.addItem">
-        New item:
-        <input data-bind='value: searchBox.itemToAdd, valueUpdate: "afterkeydown"' />
-        <button type="submit">Add</button>
-        <p>Your items:</p>
-        <select multiple="multiple" width="50" data-bind="options: searchBox.items"> </select>
-      </form>
+      <ul id="search-results" data-bind="foreach: searchBox.results">
+          <li data-bind="text: name, attr:{ 'data-loc-id': id}" onclick="FocusMarker(this);"></li>
+      </ul>
 
       <ul data-bind="foreach: locationGroup">
           <li>
@@ -36,7 +30,7 @@
           </li>
       </ul>
     </div>
-    <div id="map-canvas"></div>
+    <div id="map-canvas" class="map-canvas"></div>
   <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/data.js"></script>

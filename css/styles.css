@@ -1,4 +1,4 @@
-html, body, #map-canvas {
+html, body, .map-canvas {
 	height: 100%;
 	margin: 0;
 	padding: 0;
@@ -20,26 +20,22 @@ body{
 	background-color:#EBFAE3;
 }
 
-#user-panel{
+.user-panel{
 	padding: 1em;
 }
 
-#search-bar{
+.search-bar{
 	padding:0.3em 0em 0.5em 0.5em;
 	background-color:#D5E8C8;
 }
 
-#clear-search{
+.clear-search{
 	position:relative;
 	top:5px;
 }
 
 @media screen and (min-width: 500px) {
-	#map-container{
-		margin-left: 200px;
-	}
-
-	#user-panel{
+	.user-panel{
 		width: 200px;
 		float:left;
 	}
@@ -80,6 +76,6 @@ h3:last-child,li:last-child{
 	border-bottom-right-radius: 3px;
 }
 
-#all-markers:hover{
+.all-markers:hover{
 	background-color: #bea376;
 }

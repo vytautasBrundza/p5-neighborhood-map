@@ -12,6 +12,19 @@ var SearchBox=function(){
   return this;
 }*/
 
+var SearchBox = function(items) {
+    this.items = ko.observableArray(items);
+    this.itemToAdd = ko.observable("");
+    this.addItem = function() {
+      console.log(this.itemToAdd());
+        if (this.itemToAdd() != "") {
+            this.items.push(this.itemToAdd()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+            this.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+        }
+    }.bind(this);  // Ensure that "this" is always this view model
+};
+
+
 // location model
 var Location=function(name, type, id) {
   this.name=ko.observable(name);
@@ -42,7 +55,7 @@ var LocationGroup = function(name, children) {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-  //searchBox: new SearchBox(),
+  searchBox: new SearchBox(["Alpha", "Beta", "Gamma"]),
   locationGroup: ko.observableArray()
 };
 
@@ -155,19 +168,19 @@ function SearchWiki(location)
 
 function AddLocation(loc){
   var len= viewModel.locationGroup().length;
-  console.log(len);
+  //console.log(len);
   for (var i = 0; i < len; i++) {
-    console.log("name: "+viewModel.locationGroup()[i].name());
-    console.log("type: "+loc.type);
+    //console.log("name: "+viewModel.locationGroup()[i].name());
+    //console.log("type: "+loc.type);
     if(viewModel.locationGroup()[i].name()==loc.type) {
       console.log("adding child to existing group "+loc.type);
       viewModel.locationGroup()[i].addChild(loc);
       return;
     }
   };
-  console.log("adding child to a new group "+loc.type);
-  console.log(viewModel.locationGroup());
+  //console.log("adding child to a new group "+loc.type);
+  //console.log(viewModel.locationGroup());
   viewModel.locationGroup.push(new LocationGroup(loc.type,[loc]));
-  console.log(viewModel.locationGroup());
-  console.log(viewModel.locationGroup().length);
+  //console.log(viewModel.locationGroup());
+  //console.log(viewModel.locationGroup().length);
 }

@@ -19,6 +19,14 @@
       </div>
       <ul id="search-results"></ul>-->
 
+      <form data-bind="submit: searchBox.addItem">
+        New item:
+        <input data-bind='value: searchBox.itemToAdd, valueUpdate: "afterkeydown"' />
+        <button type="submit">Add</button>
+        <p>Your items:</p>
+        <select multiple="multiple" width="50" data-bind="options: searchBox.items"> </select>
+      </form>
+
       <ul data-bind="foreach: locationGroup">
           <li>
               <h3 data-bind="text: name" class="results-group-heading"> </h3>

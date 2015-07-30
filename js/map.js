@@ -24,9 +24,8 @@ function InitializeMap() {
 // Sets the boundaries of the map based on pin locations
   window.mapBounds = new google.maps.LatLngBounds();
 
-// pinPoster(locations) creates pins on the map for each location in
-  // the locations array
-  pinPoster(LocationFinder());
+  // look for locations
+  LocationFinder();
 }
 
 /*
@@ -77,20 +76,15 @@ console.log("create marker "+mId);
 /*
 pinPoster() fires off Google place searches for each location
 */
-function pinPoster(locs) {
+function pinPoster(locs, i) {
   // creates a Google place search service object. PlacesService does the work of
   // actually searching for location data.
   var service = new google.maps.places.PlacesService(mapElement);
-
-  // Iterates through the array of locations, creates a search object for each location
-  var len=locs.length;
-  for (var i = 0; i < len; i++) {
-   // the search request object
-    var request = {
-      query: locs[i]
-    };
-    RequestCallback(service, request, i);
-  }
+  // the search request object
+  var request = {
+    query: locs
+  };
+  RequestCallback(service, request, i);
 }
 
 function RequestCallback(service, request, id){

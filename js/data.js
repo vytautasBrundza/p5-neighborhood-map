@@ -115,7 +115,6 @@ function ReadLocations(source, source_type)
 var groupedLocations={};
 
 function LocationFinder() {
-  var locSearchStr=[];
   //console.log("Read locations and add to the user panel");
   var len=locations.locations.length;
   for (var i = 0; i < len; i++) {
@@ -129,11 +128,9 @@ function LocationFinder() {
     locations.locations[i].searchString=combinedStr;
     var newloc= new Location(locations.locations[i].name,locations.locations[i].type, i);
     AddLocation(newloc);
-    //console.log(newloc);
-    locSearchStr.push(combinedStr);
+
+    pinPoster(combinedStr,i);
   }
-  //console.log(viewModel.locationGroup);
-  return locSearchStr;
 }
 
 // Define data in a variable for developemnt purposes

@@ -91,20 +91,14 @@ function RequestCallback(service, request, id){
   // Actually searches the Google Maps API for location data and runs the callback
   // function with the search results after each search.
   // Also binds markers in the map with markers in user panel
-  // Had to place in separate function, to lose the scope of pinPoster,
-  // as it was keeping reference to the last value of i for all calls
   console.log( "request callback "+id);
-  service.textSearch(request, function(response, status) {dataCallback(response, status, id);});
-}
-
-/*
-callback(results, status) makes sure the search returned results for a location.
-If so, it creates a new map marker for that location.
-*/
-function dataCallback(results, status, rmId) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    createMapMarker(results[0], rmId);
-  }
+  service.textSearch(request, function(response, status) {
+    // makes sure the search returned results for a location.
+    // If so, it creates a new map marker for that location.
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      createMapMarker(response[0], id);
+    }
+  });
 }
 
 function FocusMarker(marker){

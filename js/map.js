@@ -51,17 +51,8 @@ console.log("create marker "+mId);
 
   markers.push(marker);
 
-  // infoWindows are the little helper windows that open when you click
-  // or hover over a pin on a map. They usually contain more information
-  // about a location.
-  var infoWindow = new google.maps.InfoWindow({
-    content: "No content found in WikiMedia"
-  });
-
-  SearchWiki(locations.locations[mId], infoWindow);
-
   google.maps.event.addListener(marker, 'click', function() {
-    infoWindow.open(mapElement, this);
+    ShowInfo(this.mId);
   });
 
   // this is where the pin actually gets added to the map.
@@ -71,6 +62,11 @@ console.log("create marker "+mId);
   mapElement.fitBounds(bounds);
   // center the map
   mapElement.setCenter(bounds.getCenter());
+}
+function ShowInfo(id){
+  console.log("show info for: "+id);
+  viewModel.infoText=ko.observable(dataModel.locations[id].view.getDescription());
+  //console.log(viewModel.infoText());
 }
 
 /*

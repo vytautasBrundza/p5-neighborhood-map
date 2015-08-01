@@ -13,6 +13,7 @@ var SearchBox = function() {
 
   // clear the search results
   this.Clear = function() {
+    console.log("clearing results");
     this.keyword("");
     viewModel.results = ko.observableArray();
   }.bind(this);  // Ensure that "this" is always this view model
@@ -27,37 +28,50 @@ var SearchBox = function() {
     }
     // check for value matches in the locations data model object
     var resultsCount=0;
-    for (var j=0; j<locations.locations.length; j++) {
-      if (locations.locations[j].name.toLowerCase().match(newValue)) {
-        viewModel.results().push(new Result(locations.locations[j].name,locations.locations[j].locId));
+    for (var j=0; j<dataModel.locations.length; j++) {
+      if (dataModel.locations[j].name.toLowerCase().match(newValue)) {
+        viewModel.results.push(new Result(dataModel.locations[j].name,dataModel.locations[j].locId));
         resultsCount++;
       }
-      if (locations.locations[j].description.toLowerCase().match(newValue)){
-        viewModel.results().push(new Result(locations.locations[j].description,locations.locations[j].locId));
+      if (dataModel.locations[j].description.toLowerCase().match(newValue)){
+        viewModel.results.push(new Result(dataModel.locations[j].description,dataModel.locations[j].locId));
         resultsCount++;
       }
     }
     console.log(viewModel.results());
     // if no matches were found, pass "not found" as a result
     if(resultsCount>0) return;
-      viewModel.results().push(new Result("No results found",-1));
+      viewModel.results.push(new Result("No results found",-1));
     });
+};
+
+// location info window
+
+// Result model (represented in the list)
+var InfoWindow=function(){
+  this.display=ko.observable("block");
+  this.contents=ko.observable("No information found");
+  return this;
 };
 
 // location model
 var Location=function(name, type, id) {
   this.name=ko.observable(name);
   this.type=type;
-  this.description=ko.observable("");
+  this.description="";
   this.locId=ko.observable(id);
   this.marker={};
   this.getDescription=function(){
-    if(this.description==""){
-      SearchWiki(this);
-    }else{
+    if(this.description){
+      console.log("use cached description");
       return this.description;
+    }else{
+      console.log("search for new description");
+      SearchWiki(this);
+      return "No results found";
     }
   };
+  dataModel.locations[id].view=this;
   return this;
 };
 
@@ -75,18 +89,19 @@ var LocationGroup = function(name, children) {
 // The view model is an abstract description of the state of the UI
 var viewModel = {
   searchBox: new SearchBox(),
-  results: ko.observableArray(),
-  locationGroup: ko.observableArray()
+  results: new ko.observableArray(),
+  locationGroup: new ko.observableArray(),
+  infoText: new InfoWindow(),
+  online: new ko.observable(true)
 };
 
 // apply bindings
 ko.applyBindings(viewModel);
 
-// *** DATA MANIPULATION
-var locations=[];
-var locationServiceData=[];
+// *** DATA MANIPULATION ***
+var dataModel={};
 
-// Reads locations from file/variable JSON
+// Reads dataModel from file/variable JSON
 function ReadLocations(source, source_type)
 {
   switch(source_type) {
@@ -95,7 +110,7 @@ function ReadLocations(source, source_type)
           url: source,
           success: function (data) {
             console.log('successfully loaded '+source);
-            locations=JSON.parse(data);
+            dataModel=JSON.parse(data);
           },
           error: function (data) {
               console.log('could not load '+source);
@@ -103,7 +118,7 @@ function ReadLocations(source, source_type)
         });
         break;
     case "variable":
-        locations=JSON.parse(source);
+        dataModel=JSON.parse(source);
         break;
     default:
       console.log("source type not specified!");
@@ -116,17 +131,17 @@ var groupedLocations={};
 
 function LocationFinder() {
   //console.log("Read locations and add to the user panel");
-  var len=locations.locations.length;
+  var len=dataModel.locations.length;
   for (var i = 0; i < len; i++) {
-    locations.locations[i].locId=i;
+    dataModel.locations[i].locId=i;
     // add multiple values to the string, if they are defined
     var combinedStr="";
-    if(locations.locations[i].address.name) combinedStr+=locations.locations[i].address.name+" ";
-    if(locations.locations[i].address.street) combinedStr+=locations.locations[i].address.street+" ";
-    if(locations.locations[i].address.city) combinedStr+=locations.locations[i].address.city+" ";
+    if(dataModel.locations[i].address.name) combinedStr+=dataModel.locations[i].address.name+" ";
+    if(dataModel.locations[i].address.street) combinedStr+=dataModel.locations[i].address.street+" ";
+    if(dataModel.locations[i].address.city) combinedStr+=dataModel.locations[i].address.city+" ";
     // prepare a string for search service
-    locations.locations[i].searchString=combinedStr;
-    var newloc= new Location(locations.locations[i].name,locations.locations[i].type, i);
+    dataModel.locations[i].searchString=combinedStr;
+    var newloc= new Location(dataModel.locations[i].name,dataModel.locations[i].type, i);
     AddLocation(newloc);
 
     pinPoster(combinedStr,i);
@@ -146,8 +161,10 @@ var wikiSearchUrl="https://en.wikipedia.org/w/api.php?action=query&list=search&s
 
 function SearchWiki(location)
 {
-  var keyword=location.name;
-  var description="no description found";
+  var id=location.locId();
+  //console.log(id);
+  var keyword=dataModel.locations[id].name;
+  var info="no description found";
   $.getJSON("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&format=json&callback=?", function(data) {
     var string= data.query.search[0].snippet;
     // discard first sentence?
@@ -155,7 +172,9 @@ function SearchWiki(location)
       string=string.slice(string.indexOf(".")+2,string.length);
     if(string.indexOf("redirects here")!=-1)
       string=string.slice(string.indexOf(".")+2,string.length);
-    location.description= string;
+    console.log("search result "+string);
+    dataModel.locations[id].view.description= string;
+    viewModel.infoText=ko.observable(string)
   });
 }
 
@@ -177,3 +196,11 @@ function AddLocation(loc){
   //console.log(viewModel.locationGroup());
   //console.log(viewModel.locationGroup().length);
 }
+
+function checkConnection(){
+  viewModel.online=ko.observable(navigator.onLine);
+  console.log(viewModel.online());
+  setTimeout(checkConnection, 500);
+}
+
+checkConnection();

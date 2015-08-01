@@ -79,3 +79,14 @@ h3:last-child,li:last-child{
 .all-markers:hover{
 	background-color: #bea376;
 }
+
+.warning{
+	position:fixed;
+	top:0px;
+	left:0px;
+	z-index:1;
+	background-color:#fff;
+	padding:1em;
+	font-size: 150%;
+	width:100%;
+}

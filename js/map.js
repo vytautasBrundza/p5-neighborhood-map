@@ -11,16 +11,16 @@ function InitializeMap() {
 
   var mapCanvas=document.getElementById('map-canvas');
 
-  var mapOptions = {
+  var mapOptions={
     disableDefaultUI: true
   };
 
-  mapElement = new google.maps.Map(mapCanvas, mapOptions);
+  mapElement=new google.maps.Map(mapCanvas, mapOptions);
 
   // fill map with markers
 
   // Sets the boundaries of the map based on pin locations
-  window.mapBounds = new google.maps.LatLngBounds();
+  window.mapBounds=new google.maps.LatLngBounds();
 
   // look for locations
   LocationFinder();
@@ -34,13 +34,13 @@ about a single location.
 function createMapMarker(placeData, mId) {
 console.log("create marker "+mId);
   // The next lines save location data from the search result object to local variables
-  var lat = placeData.geometry.location.lat();  // latitude from the place service
-  var lon = placeData.geometry.location.lng();  // longitude from the place service
-  var name = placeData.formatted_address;   // name of the place from the place service
-  bounds = window.mapBounds;            // current boundaries of the map window
+  var lat=placeData.geometry.location.lat();  // latitude from the place service
+  var lon=placeData.geometry.location.lng();  // longitude from the place service
+  var name=placeData.formatted_address;   // name of the place from the place service
+  bounds=window.mapBounds;            // current boundaries of the map window
 
   // marker is an object with additional data about the pin for a single location
-  var marker = new google.maps.Marker({
+  var marker=new google.maps.Marker({
     map: mapElement,
     position: placeData.geometry.location,
     title: name
@@ -73,9 +73,9 @@ pinPoster() fires off Google place searches for location
 function pinPoster(locs, id) {
   // creates a Google place search service object. PlacesService does the work of
   // actually searching for location data.
-  var service = new google.maps.places.PlacesService(mapElement);
+  var service=new google.maps.places.PlacesService(mapElement);
   // the search request object
-  var request = {
+  var request={
     query: locs
   };
   // Actually searches the Google Maps API for location data and runs the callback
@@ -85,7 +85,7 @@ function pinPoster(locs, id) {
   service.textSearch(request, function(response, status) {
     // makes sure the search returned results for a location.
     // If so, it creates a new map marker for that location.
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    if (status==google.maps.places.PlacesServiceStatus.OK) {
       createMapMarker(response[0], id);
     }
   });
@@ -93,13 +93,13 @@ function pinPoster(locs, id) {
 
 function FocusMarker(marker){
   // get id of marker
-  var mId = marker.getAttribute("data-loc-id");
+  var mId=marker.getAttribute("data-loc-id");
   console.log("Focus marker "+mId);
   // reset bounds
-  bounds= new google.maps.LatLngBounds();
+  bounds=new google.maps.LatLngBounds();
   // loop through markers and extend bounds if marker matches
-  for (var i = 0; i < markers.length; i++) {
-    if(markers[i].mId ==mId){
+  for (var i=0; i < markers.length; i++) {
+    if(markers[i].mId==mId){
       bounds.extend(markers[i].getPosition());
     }
   }
@@ -116,8 +116,8 @@ function FocusMarker(marker){
 
 // set map bounds to show al markers
 function FocusAllMarkers(){
-  bounds= new google.maps.LatLngBounds();
-  for (var i = 0; i < markers.length; i++) {
+  bounds=new google.maps.LatLngBounds();
+  for (var i=0; i < markers.length; i++) {
     bounds.extend(markers[i].getPosition());
   }
   // fit the map to the new marker

@@ -102,8 +102,7 @@ ko.applyBindings(viewModel);
 var dataModel={};
 
 // Reads dataModel from file/variable JSON
-function ReadLocations(source, source_type)
-{
+function ReadLocations(source, source_type){
   switch(source_type) {
     case "file":
         $.ajax({
@@ -159,8 +158,7 @@ ReadLocations(locationsFile, "variable");
 // base search string
 var wikiSearchUrl="https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
 
-function SearchWiki(location)
-{
+function SearchWiki(location){
   var id=location.locId();
   // get location name
   var keyword=dataModel.locations[id].name;

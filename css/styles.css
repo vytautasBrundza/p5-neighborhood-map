@@ -1,35 +1,37 @@
-html, body, .map-canvas {
+html,
+body,
+.map-canvas {
 	height: 100%;
 	margin: 0;
 	padding: 0;
 }
 
-img{
+img {
 	max-width: 100%;
 }
 
-.center{
-text-align: center;
+.center {
+	text-align: center;
 }
 
-h2{
+h2 {
 	padding-left: 1em;
 }
 
-body{
+body {
 	background-color: #ebfae3;
 }
 
-.user-panel{
+.user-panel {
 	padding: 1em;
 }
 
-.search-bar{
+.search-bar {
 	padding: 0.3em 0em 0.5em 0.5em;
 	background-color: #d5e8c8;
 }
 
-.clear-search{
+.clear-search {
 	position: relative;
 	top: 5px;
 }
@@ -41,46 +43,47 @@ body{
 	}
 }
 
-.results-group-heading{
+.results-group-heading {
 	margin-bottom: 0;
 	padding: 0.2em 1em;
 	background-color: #dbbf8f;
 }
 
-ul{
+ul {
 	margin: 0;
 	padding: 0;
 }
 
-li{
+li {
 	list-style: none;
 }
 
-li.location-item{
+li.location-item {
 	background-color: #c5dfaf;
 	text-align: center;
 	padding: 0.3em 0;
 }
 
-li.location-item:hover{
+li.location-item:hover {
 	background-color: #aec597;
 }
 
-h3{
+h3 {
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 }
 
-h3:last-child,li:last-child{
+h3:last-child,
+li:last-child {
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
 
-.all-markers:hover{
+.all-markers:hover {
 	background-color: #bea376;
 }
 
-.warning{
+.warning {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -91,7 +94,7 @@ h3:last-child,li:last-child{
 	width: 100%;
 }
 
-.info{
+.info {
 	border-radius: 3px;
 	background-color: #c5dfaf;
 }

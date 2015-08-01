@@ -1,7 +1,5 @@
-/*
-Start here! initializeMap() is called when page is loaded.
-*/
 // *** MAP ***
+
 var mapElement;
 var markers=[];
 var bounds;
@@ -21,7 +19,7 @@ function InitializeMap() {
 
   // fill map with markers
 
-// Sets the boundaries of the map based on pin locations
+  // Sets the boundaries of the map based on pin locations
   window.mapBounds = new google.maps.LatLngBounds();
 
   // look for locations
@@ -63,16 +61,16 @@ console.log("create marker "+mId);
   // center the map
   mapElement.setCenter(bounds.getCenter());
 }
+
 function ShowInfo(id){
   console.log("show info for: "+id);
   viewModel.infoText=ko.observable(dataModel.locations[id].view.getDescription());
-  //console.log(viewModel.infoText());
 }
 
 /*
-pinPoster() fires off Google place searches for each location
+pinPoster() fires off Google place searches for location
 */
-function pinPoster(locs, i) {
+function pinPoster(locs, id) {
   // creates a Google place search service object. PlacesService does the work of
   // actually searching for location data.
   var service = new google.maps.places.PlacesService(mapElement);
@@ -80,14 +78,10 @@ function pinPoster(locs, i) {
   var request = {
     query: locs
   };
-  RequestCallback(service, request, i);
-}
-
-function RequestCallback(service, request, id){
   // Actually searches the Google Maps API for location data and runs the callback
   // function with the search results after each search.
   // Also binds markers in the map with markers in user panel
-  console.log( "request callback "+id);
+  console.log( "callback returned for "+id);
   service.textSearch(request, function(response, status) {
     // makes sure the search returned results for a location.
     // If so, it creates a new map marker for that location.
@@ -98,12 +92,12 @@ function RequestCallback(service, request, id){
 }
 
 function FocusMarker(marker){
+  // get id of marker
   var mId = marker.getAttribute("data-loc-id");
   console.log("Focus marker "+mId);
-  var mkr=markers.filter(function( m ) {
-    return m.mId == mId;
-  });
+  // reset bounds
   bounds= new google.maps.LatLngBounds();
+  // loop through markers and extend bounds if marker matches
   for (var i = 0; i < markers.length; i++) {
     if(markers[i].mId ==mId){
       bounds.extend(markers[i].getPosition());
@@ -112,6 +106,7 @@ function FocusMarker(marker){
   // fit the map to the new marker
   FocusBounds();
   // http://stackoverflow.com/a/4709017/1742303
+  // set zoom for single marker
   google.maps.event.addListenerOnce(mapElement, 'bounds_changed', function(event) {
     if (this.getZoom()){
         this.setZoom(16);
@@ -119,6 +114,7 @@ function FocusMarker(marker){
   });
 }
 
+// set map bounds to show al markers
 function FocusAllMarkers(){
   bounds= new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
@@ -135,5 +131,4 @@ function FocusBounds(){
 }
 
 // Calls the initializeMap() function when the page loads
-//window.addEventListener('load', initializeMap);
 google.maps.event.addDomListener(window, 'load', InitializeMap);

@@ -8,14 +8,14 @@ var Result=function(name, id){
 };
 
 // Search box model
-var SearchBox = function() {
-  this.keyword = ko.observable("");
+var SearchBox=function() {
+  this.keyword=ko.observable("");
 
   // clear the search results
-  this.Clear = function() {
+  this.Clear=function() {
     console.log("clearing results");
     this.keyword("");
-    viewModel.results = ko.observableArray();
+    viewModel.results=ko.observableArray();
   }.bind(this);  // Ensure that "this" is always this view model
 
   // perform a new search whenever the keyword changes
@@ -47,9 +47,9 @@ var SearchBox = function() {
 
 // location info window
 
-// Result model (represented in the list)
+// information window model
 var InfoWindow=function(){
-  this.display=ko.observable("block");
+  this.enabled=ko.observable(false);
   this.contents=ko.observable("No information found");
   return this;
 };
@@ -76,23 +76,23 @@ var Location=function(name, type, id) {
 };
 
 // Define a "LocationGroup" class that tracks its own name and children, and has a method to add a new child
-var LocationGroup = function(name, children) {
-    this.name = ko.observable(name);
-    this.children = ko.observableArray(children);
+var LocationGroup=function(name, children) {
+    this.name=ko.observable(name);
+    this.children=ko.observableArray(children);
 
-    this.addChild = function(newLoc) {
+    this.addChild=function(newLoc) {
         this.children.push(newLoc);
     }.bind(this);
     return this;
 };
 
 // The view model is an abstract description of the state of the UI
-var viewModel = {
+var viewModel={
   searchBox: new SearchBox(),
-  results: new ko.observableArray(),
-  locationGroup: new ko.observableArray(),
+  results: ko.observableArray(),
+  locationGroup: ko.observableArray(),
   infoText: new InfoWindow(),
-  online: new ko.observable(true)
+  notOnline: ko.observable(false)
 };
 
 // apply bindings
@@ -126,13 +126,12 @@ function ReadLocations(source, source_type)
   }
 }
 
-  // LocationFinder() returns an array of every location string from the JSON locations data
+// LocationFinder() returns an array of every location string from the JSON locations data
 var groupedLocations={};
 
 function LocationFinder() {
-  //console.log("Read locations and add to the user panel");
   var len=dataModel.locations.length;
-  for (var i = 0; i < len; i++) {
+  for (var i=0; i < len; i++) {
     dataModel.locations[i].locId=i;
     // add multiple values to the string, if they are defined
     var combinedStr="";
@@ -141,9 +140,10 @@ function LocationFinder() {
     if(dataModel.locations[i].address.city) combinedStr+=dataModel.locations[i].address.city+" ";
     // prepare a string for search service
     dataModel.locations[i].searchString=combinedStr;
-    var newloc= new Location(dataModel.locations[i].name,dataModel.locations[i].type, i);
+    // add new location object
+    var newloc=new Location(dataModel.locations[i].name,dataModel.locations[i].type, i);
     AddLocation(newloc);
-
+    // create a marker for the location
     pinPoster(combinedStr,i);
   }
 }
@@ -162,45 +162,46 @@ var wikiSearchUrl="https://en.wikipedia.org/w/api.php?action=query&list=search&s
 function SearchWiki(location)
 {
   var id=location.locId();
-  //console.log(id);
+  // get location name
   var keyword=dataModel.locations[id].name;
+  // set initial description
   var info="no description found";
+  // send request to wikiMedia API
   $.getJSON("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+keyword+"&format=json&callback=?", function(data) {
-    var string= data.query.search[0].snippet;
+    var string=data.query.search[0].snippet;
     // discard first sentence?
     if(string.indexOf("For other uses")!=-1)
       string=string.slice(string.indexOf(".")+2,string.length);
     if(string.indexOf("redirects here")!=-1)
       string=string.slice(string.indexOf(".")+2,string.length);
     console.log("search result "+string);
-    dataModel.locations[id].view.description= string;
-    viewModel.infoText=ko.observable(string)
+    // add value to data model
+    dataModel.locations[id].view.description=string;
+    // add value to view model
+    viewModel.infoText.enabled=ko.observable(true);
+    viewModel.infoText.contents=ko.observable(string);
   });
 }
 
+// add new location to the list
 function AddLocation(loc){
-  var len= viewModel.locationGroup().length;
-  //console.log(len);
-  for (var i = 0; i < len; i++) {
-    //console.log("name: "+viewModel.locationGroup()[i].name());
-    //console.log("type: "+loc.type);
+  var len=viewModel.locationGroup().length;
+  for (var i=0; i < len; i++) {
     if(viewModel.locationGroup()[i].name()==loc.type) {
-      //console.log("adding child to existing group "+loc.type);
       viewModel.locationGroup()[i].addChild(loc);
       return;
     }
   }
-  //console.log("adding child to a new group "+loc.type);
-  //console.log(viewModel.locationGroup());
   viewModel.locationGroup.push(new LocationGroup(loc.type,[loc]));
-  //console.log(viewModel.locationGroup());
-  //console.log(viewModel.locationGroup().length);
 }
 
+// checks if connected to the internet
 function checkConnection(){
-  viewModel.online=ko.observable(navigator.onLine);
-  console.log(viewModel.online());
+  viewModel.notOnline=ko.observable(!navigator.onLine);
+  console.log("not online: "+viewModel.notOnline());
+  // requests next check in 500 ms
   setTimeout(checkConnection, 500);
 }
 
+// fire off the first check
 checkConnection();

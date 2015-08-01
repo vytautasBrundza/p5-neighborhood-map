@@ -10,7 +10,7 @@
     </script>
   </head>
   <body>
-    <div class="warning center" data-bind="enable: online">You are not connected to the internet. Please connect to continue using this app.</div>
+    <div class="warning center" data-bind="enable: notOnline">You are not connected to the internet. Please connect to continue using this app.</div>
     <div class="user-panel">
       <h2>Select location</h2>
       <h3 onclick="FocusAllMarkers();" class="results-group-heading all-markers">All markers</h3>
@@ -30,7 +30,10 @@
               </ul>
           </li>
       </ul>
-      <div data-bind="text: infoText.contents"></div>
+      <div class="info center" data-bind="enabled: infoText.enabled">
+        <h3 results-group-heading>Place info</h3>
+        <p data-bind="text: infoText.contents"></p>
+      </div>
     </div>
     <div id="map-canvas" class="map-canvas"></div>
   <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>

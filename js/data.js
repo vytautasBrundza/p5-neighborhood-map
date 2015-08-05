@@ -92,7 +92,7 @@ var viewModel={
   results: ko.observableArray(),
   locationGroup: ko.observableArray(),
   infoText: new InfoWindow(),
-  notOnline: ko.observable(false)
+  notOnline: ko.observable()
 };
 
 // apply bindings
@@ -178,8 +178,19 @@ function SearchWiki(location){
     // add value to view model
     viewModel.infoText.enabled=ko.observable(true);
     viewModel.infoText.contents=ko.observable(string);
+  })
+  .done(function() {
+    console.log( "search success" );
+  })
+  .fail(function() {
+    alert("search error");
+    console.log( "search error" );
+  })
+  .always(function() {
+    console.log( "search complete" );
   });
 }
+// these don't work http://stackoverflow.com/questions/11044694/how-to-detect-ajax-call-failure-due-to-network-disconnected
 
 // add new location to the list
 function AddLocation(loc){
@@ -195,7 +206,7 @@ function AddLocation(loc){
 
 // checks if connected to the internet
 function checkConnection(){
-  viewModel.notOnline=ko.observable(!navigator.onLine);
+  viewModel.notOnline(!navigator.onLine);
   console.log("not online: "+viewModel.notOnline());
   // requests next check in 500 ms
   setTimeout(checkConnection, 500);

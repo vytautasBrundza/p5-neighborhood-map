@@ -13,15 +13,15 @@ var SearchBox=function() {
 
   // clear the search results
   this.Clear=function() {
-    console.log("clearing results");
+    //console.log("clearing results");
     this.keyword("");
-    viewModel.results=ko.observableArray();
+    viewModel.results.removeAll();
   }.bind(this);  // Ensure that "this" is always this view model
 
   // perform a new search whenever the keyword changes
   this.keyword.subscribe(function(newValue){
     // reset the results array
-    viewModel.results=ko.observableArray();
+    viewModel.results.removeAll();
     // only search if keyword is 2 characters or more
     if(newValue.length<2){
       return;
@@ -38,7 +38,7 @@ var SearchBox=function() {
         resultsCount++;
       }
     }
-    console.log(viewModel.results());
+    //console.log(viewModel.results());
     // if no matches were found, pass "not found" as a result
     if(resultsCount>0) return;
       viewModel.results.push(new Result("No results found",-1));
@@ -94,6 +94,7 @@ var viewModel={
   infoText: new InfoWindow(),
   notOnline: ko.observable()
 };
+viewModel.infoText.enabled(false);
 
 // apply bindings
 ko.applyBindings(viewModel);
@@ -176,8 +177,8 @@ function SearchWiki(location){
     // add value to data model
     dataModel.locations[id].view.description=string;
     // add value to view model
-    viewModel.infoText.enabled=ko.observable(true);
-    viewModel.infoText.contents=ko.observable(string);
+    viewModel.infoText.enabled(true);
+    viewModel.infoText.contents(string);
   })
   .done(function() {
     console.log( "search success" );
@@ -207,7 +208,6 @@ function AddLocation(loc){
 // checks if connected to the internet
 function checkConnection(){
   viewModel.notOnline(!navigator.onLine);
-  console.log("not online: "+viewModel.notOnline());
   // requests next check in 500 ms
   setTimeout(checkConnection, 500);
 }

@@ -64,7 +64,9 @@ console.log("create marker "+mId);
 
 function ShowInfo(id){
   console.log("show info for: "+id);
-  viewModel.infoText=ko.observable(dataModel.locations[id].view.getDescription());
+  console.log(viewModel.infoText.enabled());
+  viewModel.infoText.enabled(true);
+  viewModel.infoText.contents(dataModel.locations[id].view.getDescription());
 }
 
 /*

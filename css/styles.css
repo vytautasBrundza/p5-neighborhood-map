@@ -31,9 +31,18 @@ body {
 	background-color: #d5e8c8;
 }
 
-.clear-search {
+.btn-clear-search {
 	position: relative;
 	top: 5px;
+}
+
+.btn-dismiss {
+	border-radius:5px;
+	background-color:#c0c0c0;
+}
+
+.btn-dismiss:hover {
+	background-color:#d0d0d0;
 }
 
 @media screen and (min-width: 500px) {

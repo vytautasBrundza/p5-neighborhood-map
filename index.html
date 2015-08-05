@@ -15,7 +15,7 @@
       <h3 onclick="FocusAllMarkers();" class="results-group-heading all-markers">All markers</h3>
       <div class="search-bar">
           <input type="text" name="search_locations" id="search-field" placeholder="Search" data-bind='value: searchBox.keyword, valueUpdate: "afterkeydown"'>
-          <img id="clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear()" alt="clear search field button"/>
+          <img id="btn-clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear()" alt="clear search field button"/>
       </div>
       <ul data-bind="foreach: results">
           <li data-bind="text: name, attr:{ 'data-loc-id': id}" class="location-item" onclick="FocusMarker(this);"></li>
@@ -31,7 +31,8 @@
       </ul>
       <div class="info center" data-bind="visible: infoText.enabled">
         <h3 results-group-heading>Place info</h3>
-        <p data-bind="text: infoText.contents"></p>
+        <p data-bind="html: infoText.contents"></p>
+        <div class="btn-dismiss" onclick="viewModel.infoText.Dismiss()">Dismiss</div>
       </div>
     </div>
     <div id="map-canvas" class="map-canvas"></div>

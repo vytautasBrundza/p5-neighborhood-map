@@ -10,7 +10,6 @@ var Result=function(name, id){
 // Search box model
 var SearchBox=function() {
   this.keyword=ko.observable("");
-
   // clear the search results
   this.Clear=function() {
     //console.log("clearing results");
@@ -51,6 +50,10 @@ var SearchBox=function() {
 var InfoWindow=function(){
   this.enabled=ko.observable(false);
   this.contents=ko.observable("No information found");
+  // dismiss the info floater
+  this.Dismiss=function() {
+    this.enabled(false);
+  }.bind(this);  // Ensure that "this" is always this view model
   return this;
 };
 

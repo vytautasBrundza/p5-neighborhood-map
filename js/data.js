@@ -12,7 +12,6 @@ var SearchBox=function() {
   this.keyword=ko.observable("");
   // clear the search results
   this.Clear=function() {
-    //console.log("clearing results");
     this.keyword("");
     viewModel.results.removeAll();
   }.bind(this);  // Ensure that "this" is always this view model
@@ -37,7 +36,6 @@ var SearchBox=function() {
         resultsCount++;
       }
     }
-    //console.log(viewModel.results());
     // if no matches were found, pass "not found" as a result
     if(resultsCount>0) return;
       viewModel.results.push(new Result("No results found",-1));
@@ -64,12 +62,11 @@ var Location=function(name, type, id) {
   this.description="";
   this.locId=ko.observable(id);
   this.marker={};
+  // return cached description or request a new one
   this.getDescription=function(){
     if(this.description){
-      console.log("use cached description");
       return this.description;
     }else{
-      console.log("search for new description");
       SearchWiki(this);
       return "No results found";
     }
@@ -80,13 +77,13 @@ var Location=function(name, type, id) {
 
 // Define a "LocationGroup" class that tracks its own name and children, and has a method to add a new child
 var LocationGroup=function(name, children) {
-    this.name=ko.observable(name);
-    this.children=ko.observableArray(children);
-
-    this.addChild=function(newLoc) {
-        this.children.push(newLoc);
-    }.bind(this);
-    return this;
+  this.name=ko.observable(name);
+  this.children=ko.observableArray(children);
+  // add an location entry
+  this.addChild=function(newLoc) {
+      this.children.push(newLoc);
+  }.bind(this);
+  return this;
 };
 
 // The view model is an abstract description of the state of the UI
@@ -97,7 +94,6 @@ var viewModel={
   infoText: new InfoWindow(),
   notOnline: ko.observable()
 };
-viewModel.infoText.enabled(false);
 
 // apply bindings
 ko.applyBindings(viewModel);
@@ -112,11 +108,10 @@ function ReadLocations(source, source_type){
         $.ajax({
           url: source,
           success: function (data) {
-            console.log('successfully loaded '+source);
             dataModel=JSON.parse(data);
           },
           error: function (data) {
-              console.log('could not load '+source);
+            alert('Application error: could not load '+source+' data file!');
           }
         });
         break;
@@ -124,7 +119,7 @@ function ReadLocations(source, source_type){
         dataModel=JSON.parse(source);
         break;
     default:
-      console.log("source type not specified!");
+      alert("Application error: data source type not specified!");
       break;
   }
 }
@@ -176,22 +171,14 @@ function SearchWiki(location){
       string=string.slice(string.indexOf(".")+2,string.length);
     if(string.indexOf("redirects here")!=-1)
       string=string.slice(string.indexOf(".")+2,string.length);
-    console.log("search result "+string);
     // add value to data model
     dataModel.locations[id].view.description=string;
     // add value to view model
     viewModel.infoText.enabled(true);
     viewModel.infoText.contents(string);
   })
-  .done(function() {
-    console.log( "search success" );
-  })
   .fail(function() {
-    alert("search error");
-    console.log( "search error" );
-  })
-  .always(function() {
-    console.log( "search complete" );
+    alert("Wikipedia search failed!");
   });
 }
 // these don't work http://stackoverflow.com/questions/11044694/how-to-detect-ajax-call-failure-due-to-network-disconnected

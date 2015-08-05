@@ -37,12 +37,13 @@ body {
 }
 
 .btn-dismiss {
+	margin-top:0;
 	border-radius:5px;
-	background-color:#c0c0c0;
+	background-color:#dbbf8f;
 }
 
 .btn-dismiss:hover {
-	background-color:#d0d0d0;
+	background-color:#bea376;
 }
 
 @media screen and (min-width: 500px) {
@@ -97,7 +98,7 @@ li:last-child {
 	top: 0;
 	left: 0;
 	z-index: 1;
-	background-color: #fff;
+	background-color:#fcf8e3;
 	padding: 1em;
 	font-size: 150%;
 	width: 100%;
@@ -106,8 +107,7 @@ li:last-child {
 .info {
 	border-radius: 3px;
 	background-color: #c5dfaf;
-}
-
-.bg-warning{
-	background-color:#fcf8e3;
+	width:100%;
+	position:fixed;
+	bottom:0;
 }

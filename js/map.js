@@ -4,10 +4,8 @@ var mapElement;
 var markers=[];
 var bounds;
 
+// set up the map
 function InitializeMap() {
-
-// create map
-  console.log("Initializing map");
 
   var mapCanvas=document.getElementById('map-canvas');
 
@@ -31,8 +29,19 @@ createMapMarker(placeData) reads Google Places search results to create map pins
 placeData is the object returned from search results containing information
 about a single location.
 */
+// fetch some pins
+var regularPin=new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FE7569",
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+var highlightedPin=new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FEE069",
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+// marker constructor
 function createMapMarker(placeData, mId) {
-console.log("create marker "+mId);
+
   // The next lines save location data from the search result object to local variables
   var lat=placeData.geometry.location.lat();  // latitude from the place service
   var lon=placeData.geometry.location.lng();  // longitude from the place service
@@ -43,14 +52,18 @@ console.log("create marker "+mId);
   var marker=new google.maps.Marker({
     map: mapElement,
     position: placeData.geometry.location,
-    title: name
+    title: name,
+    icon: regularPin
   });
   marker.mId=mId;
 
   markers.push(marker);
 
   google.maps.event.addListener(marker, 'click', function() {
+    // show info window
     ShowInfo(this.mId);
+    // focus the marker in the map
+    FocusMarker(mId);
   });
 
   // this is where the pin actually gets added to the map.
@@ -62,10 +75,19 @@ console.log("create marker "+mId);
   mapElement.setCenter(bounds.getCenter());
 }
 
+// reset all the marker to have the regular pins
+function ResetMarkers(){
+  var len=markers.length;
+  for (var i = 0; i < len; i++) {
+    markers[i].setIcon(regularPin);
+  }
+}
+
+// show info for location by id
 function ShowInfo(id){
-  console.log("show info for: "+id);
-  console.log(viewModel.infoText.enabled());
+  // enable info window
   viewModel.infoText.enabled(true);
+  // get the description text
   viewModel.infoText.contents(dataModel.locations[id].view.getDescription());
 }
 
@@ -83,7 +105,6 @@ function pinPoster(locs, id) {
   // Actually searches the Google Maps API for location data and runs the callback
   // function with the search results after each search.
   // Also binds markers in the map with markers in user panel
-  console.log( "callback returned for "+id);
   service.textSearch(request, function(response, status) {
     // makes sure the search returned results for a location.
     // If so, it creates a new map marker for that location.
@@ -93,16 +114,21 @@ function pinPoster(locs, id) {
   });
 }
 
-function FocusMarker(marker){
-  // get id of marker
-  var mId=marker.getAttribute("data-loc-id");
-  console.log("Focus marker "+mId);
+function FocusMarker(mId){
+  if(isNaN(mId)){
+    // get id of marker
+    mId=mId.getAttribute("data-loc-id");
+  }
   // reset bounds
   bounds=new google.maps.LatLngBounds();
+  // reset all the other markers pins
+  ResetMarkers();
   // loop through markers and extend bounds if marker matches
   for (var i=0; i < markers.length; i++) {
     if(markers[i].mId==mId){
       bounds.extend(markers[i].getPosition());
+        // set this marker pin
+        markers[i].setIcon(highlightedPin);
     }
   }
   // fit the map to the new marker

@@ -29,13 +29,12 @@
               </ul>
           </li>
       </ul>
-      <div class="info center" data-bind="visible: infoText.enabled">
-        <h3 results-group-heading>Place info</h3>
-        <p data-bind="html: infoText.contents"></p>
-        <div class="btn-dismiss" onclick="viewModel.infoText.Dismiss()">Dismiss</div>
-      </div>
     </div>
     <div id="map-canvas" class="map-canvas"></div>
+    <div class="info center" data-bind="visible: infoText.enabled">
+        <h3 class="results-group-heading btn-dismiss" onclick="viewModel.infoText.Dismiss()">Dismiss: Place info</h3>
+        <p data-bind="html: infoText.contents"></p>
+      </div>
   <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="js/data.js"></script>

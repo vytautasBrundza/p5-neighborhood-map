@@ -12,10 +12,10 @@
     <div class="warning center bg-warning" data-bind="visible: notOnline">You are not connected to the internet. Please connect to continue using this app.</div>
     <div class="user-panel">
       <h2>Select location</h2>
-      <h3 onclick="FocusAllMarkers();" class="results-group-heading all-markers">All markers</h3>
+      <h3 onclick="FocusMarker();" class="results-group-heading all-markers">All markers</h3>
       <div class="search-bar">
           <input type="text" name="search_locations" id="search-field" placeholder="Search" data-bind='value: searchBox.keyword, valueUpdate: "afterkeydown"'>
-          <img id="btn-clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear()" alt="clear search field button"/>
+          <img id="btn-clear-search" class="clear-search" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Simple_close_icon.png" onclick="viewModel.searchBox.Clear(); FocusMarker();" alt="clear search field button"/>
       </div>
       <ul data-bind="foreach: results">
           <li data-bind="text: name, attr:{ 'data-loc-id': id}" class="location-item" onclick="FocusMarker(this);"></li>

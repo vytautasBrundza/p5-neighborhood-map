@@ -80,6 +80,7 @@ function ResetMarkers(){
   var len=markers.length;
   for (var i = 0; i < len; i++) {
     markers[i].setIcon(regularPin);
+    markers[i].setVisible(false);
   }
 }
 
@@ -114,25 +115,74 @@ function pinPoster(locs, id) {
   });
 }
 
+// This fucntion filters markers on the map focus bounds.
+// if no paprameters are passed, all markers will be shown
+// this fucntion accepts either list of marker ids or a single marker id/object.
 function FocusMarker(mId){
-  if(isNaN(mId)){
-    // get id of marker
-    mId=mId.getAttribute("data-loc-id");
-  }
-  // reset bounds
-  bounds=new google.maps.LatLngBounds();
-  // reset all the other markers pins
-  ResetMarkers();
-  // loop through markers and extend bounds if marker matches
-  for (var i=0; i < markers.length; i++) {
-    if(markers[i].mId==mId){
+  if (typeof(mId)==='undefined'){
+    var len=markers.length;
+    for (var i = 0; i < len; i++) {
+      markers[i].setVisible(true);
+    };
+    for (var i=0; i < markers.length; i++) {
       bounds.extend(markers[i].getPosition());
-        // set this marker pin
-        markers[i].setIcon(highlightedPin);
+    }
+    // fit the map to the new marker
+    FocusBounds();
+  }else{
+    // reset bounds
+    bounds=new google.maps.LatLngBounds();
+    // reset all the other markers pins
+    ResetMarkers();
+    // if an array of markers is passed
+    if(mId.constructor === Array){
+      var len1=markers.length;
+      for (var i=0; i < len1; i++) {
+        var len2=mId.length;
+        for (var j = 0; j < len2; j++) {
+          if(markers[i].mId==mId[j]){
+            bounds.extend(markers[i].getPosition());
+            // set this marker pin
+            markers[i].setIcon(highlightedPin);
+            markers[i].setVisible(true);
+          }
+        }
+      }
+      // fit the map to the new set of markers
+      FocusBounds();
+      if(mId.length=1){
+        ZoomSingleMarker();
+      }
+    }else{  // if single marker is passed
+      if(isNaN(mId)){
+        // get id of marker
+        mId=mId.getAttribute("data-loc-id");
+      }
+      // loop through markers and extend bounds if marker matches
+      var len=markers.length
+      for (var i=0; i < len; i++) {
+        if(markers[i].mId==mId){
+          bounds.extend(markers[i].getPosition());
+            // set this marker pin
+            markers[i].setIcon(highlightedPin);
+            markers[i].setVisible(true);
+        }
+      }
+      // fit the map to the new marker
+      FocusBounds();
+      ZoomSingleMarker();
     }
   }
+}
+
+function FocusBounds(){
   // fit the map to the new marker
-  FocusBounds();
+    mapElement.fitBounds(bounds);       // auto-zoom
+    mapElement.panToBounds(bounds);     // auto-center
+}
+
+function ZoomSingleMarker()
+{
   // http://stackoverflow.com/a/4709017/1742303
   // set zoom for single marker
   google.maps.event.addListenerOnce(mapElement, 'bounds_changed', function(event) {
@@ -140,22 +190,6 @@ function FocusMarker(mId){
         this.setZoom(16);
     }
   });
-}
-
-// set map bounds to show al markers
-function FocusAllMarkers(){
-  bounds=new google.maps.LatLngBounds();
-  for (var i=0; i < markers.length; i++) {
-    bounds.extend(markers[i].getPosition());
-  }
-  // fit the map to the new marker
-  FocusBounds();
-}
-
-function FocusBounds(){
-  // fit the map to the new marker
-    mapElement.fitBounds(bounds);       // auto-zoom
-    mapElement.panToBounds(bounds);     // auto-center
 }
 
 // Calls the initializeMap() function when the page loads

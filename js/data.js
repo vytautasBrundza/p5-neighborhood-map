@@ -26,21 +26,32 @@ var SearchBox=function() {
     }
     // check for value matches in the locations data model object
     var resultsCount=0;
+    var markersList=[];
     for (var j=0; j<dataModel.locations.length; j++) {
       if (dataModel.locations[j].name.toLowerCase().match(newValue)) {
         viewModel.results.push(new Result(dataModel.locations[j].name,dataModel.locations[j].locId));
+        markersList.push(dataModel.locations[j].locId);
         resultsCount++;
       }
       if (dataModel.locations[j].description.toLowerCase().match(newValue)){
         viewModel.results.push(new Result(dataModel.locations[j].description,dataModel.locations[j].locId));
+        markersList.push(dataModel.locations[j].locId);
         resultsCount++;
       }
     }
     // if no matches were found, pass "not found" as a result
-    if(resultsCount>0) return;
-      viewModel.results.push(new Result("No results found",-1));
-    });
+    if(resultsCount>0){
+      FocusMarker(markersList.filter(onlyUnique));
+      return;
+    }
+    viewModel.results.push(new Result("No results found",-1));
+  });
 };
+
+// filter unique records function helper
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
 
 // location info window
 

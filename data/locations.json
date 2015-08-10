@@ -23,7 +23,7 @@
     {
       "name": "The Meadows",
       "type": "leisure",
-      "description": "thats a tall hill in the middle of the town",
+      "description": "a fabulous park",
       "address": {
         "name": "The Meadows",
         "city": "Edinburgh",
@@ -31,9 +31,19 @@
       }
     },
     {
-      "name": "Glenfinlas street",
+      "name": "Cinema",
+      "type": "leisure",
+      "description": "IMAX cinema",
+      "address": {
+        "name": "imax cinema",
+        "city": "Edinburgh",
+        "postalCode": "EH11 1AF"
+      }
+    },
+    {
+      "name": "Glenfinlas",
       "type": "accomodation",
-      "description": "thats my current place",
+      "description": "thats my first place",
       "address": {
         "street": "6 Glenfinlas St",
         "city": "Edinburgh",

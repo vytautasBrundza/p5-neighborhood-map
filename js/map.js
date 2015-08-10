@@ -123,6 +123,7 @@ function FocusMarker(mId){
     var len=markers.length;
     for (var i = 0; i < len; i++) {
       markers[i].setVisible(true);
+      markers[i].setIcon(regularPin);
     };
     for (var i=0; i < markers.length; i++) {
       bounds.extend(markers[i].getPosition());

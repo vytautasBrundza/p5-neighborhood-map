@@ -24,6 +24,8 @@ var SearchBox=function() {
     if(newValue.length<2){
       return;
     }
+    // lower case the search keyword
+    newValue=newValue.toLowerCase();
     // check for value matches in the locations data model object
     var resultsCount=0;
     var markersList=[];
@@ -158,7 +160,12 @@ function LocationFinder() {
 }
 
 // Define data in a variable for developemnt purposes
-var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "Arthurs Seat", "city": "Edinburgh", "postalCode": "EH8"}},{"name": "Edinburgh Castle", "type": "leisure", "description": "A big castle on top of the hill", "address":{"name": "Edinburgh Castle", "city": "Edinburgh", "postalCode": "EH1 2NG"}},{"name": "The Meadows", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "The Meadows", "city": "Edinburgh", "postalCode": "EH9 9EX"}},{"name": "Glenfinlas street", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},{"name": "Tesco Bank", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
+var locationsFile='{"locations":[{"name": "Arthur\'s Seat", "type": "leisure", "description": "thats a tall hill in the middle of the town", "address":{"name": "Arthurs Seat", "city": "Edinburgh", "postalCode": "EH8"}},'
++'{"name": "Edinburgh Castle", "type": "leisure", "description": "A big castle on top of the hill", "address":{"name": "Edinburgh Castle", "city": "Edinburgh", "postalCode": "EH1 2NG"}},'
++'{"name": "The Meadows", "type": "leisure", "description": "a fabulous park", "address":{"name": "The Meadows", "city": "Edinburgh", "postalCode": "EH9 9EX"}},'
++'{"name": "Cinema", "type": "leisure", "description": "IMAX cinema", "address":{"name": "imax cinema", "city": "Edinburgh", "postalCode": "EH11 1AF"}},'
++'{"name": "Glenfinlas", "type": "accomodation", "description": "thats my current place", "address":{"street": "6 Glenfinlas St", "city": "Edinburgh", "postalCode": "EH3 6AQ"}},'
++'{"name": "Tesco Bank", "type": "employment", "description": "thats my job", "address":{"street": "2 S Gyle Cres", "city": "Edinburgh", "postalCode": "EHQ12 9FQ"}}]}';
 
 // Read locations data
 // ReadLocations("data/locations.json", "file"); // uncomment to use data file

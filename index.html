@@ -20,7 +20,6 @@
       <ul data-bind="foreach: results">
           <li data-bind="text: name, attr:{ 'data-loc-id': id}" class="location-item" onclick="FocusMarker(this);"></li>
       </ul>
-
       <ul data-bind="foreach: locationGroup">
           <li>
               <h3 data-bind="text: name" class="results-group-heading"></h3>
@@ -31,10 +30,6 @@
       </ul>
     </div>
     <div id="map-canvas" class="map-canvas"></div>
-    <div class="info center" data-bind="visible: infoText.enabled">
-      <h3 class="results-group-heading btn-dismiss" onclick="viewModel.infoText.Dismiss()">Dismiss: Place info</h3>
-      <p data-bind="html: infoText.contents"></p>
-    </div>
   <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="js/data.js"></script>

@@ -3,6 +3,7 @@
 var mapElement;
 var markers=[];
 var bounds;
+var infoWindow=null;
 
 // set up the map
 function InitializeMap() {
@@ -86,10 +87,16 @@ function ResetMarkers(){
 
 // show info for location by id
 function ShowInfo(id){
-  // enable info window
-  viewModel.infoText.enabled(true);
-  // get the description text
-  viewModel.infoText.contents(dataModel.locations[id].view.getDescription());
+  var desc=dataModel.locations[id].view.getDescription(id);
+  // open new info window
+  if(desc){
+    // close infoo window if already open
+    CloseInfo();
+    infoWindow=new google.maps.InfoWindow({
+      content: desc
+    });
+    infoWindow.open(mapElement, GetMarker(id));
+  }
 }
 
 /*
@@ -120,6 +127,9 @@ function pinPoster(locs, id) {
 // this fucntion accepts either list of marker ids or a single marker id/object.
 function FocusMarker(mId){
   if (typeof(mId)==='undefined'){
+    // close info window
+    CloseInfo();
+    // calculate new bounds
     var len=markers.length;
     for (var i = 0; i < len; i++) {
       markers[i].setVisible(true);
@@ -195,3 +205,23 @@ function ZoomSingleMarker()
 
 // Calls the initializeMap() function when the page loads
 google.maps.event.addDomListener(window, 'load', InitializeMap);
+
+// get the marker by id
+function GetMarker(id){
+  var len=markers.length;
+  for (var i = 0; i < len; i++) {
+    if(markers[i].mId==id){
+      return markers[i];
+    };
+  };
+}
+
+// close info window
+// instead of writing some fancy singleton extension to the infowindow, just close the one already open
+// http://stackoverflow.com/a/4540249/1742303
+function CloseInfo(){
+  // close infoo window if already open
+  if (infoWindow) {
+    infoWindow.close();
+  }
+}

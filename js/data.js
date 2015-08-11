@@ -55,19 +55,6 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-// location info window
-
-// information window model
-var InfoWindow=function(){
-  this.enabled=ko.observable(false);
-  this.contents=ko.observable("No information found");
-  // dismiss the info floater
-  this.Dismiss=function() {
-    this.enabled(false);
-  }.bind(this);  // Ensure that "this" is always this view model
-  return this;
-};
-
 // location model
 var Location=function(name, type, id) {
   this.name=ko.observable(name);
@@ -76,12 +63,12 @@ var Location=function(name, type, id) {
   this.locId=ko.observable(id);
   this.marker={};
   // return cached description or request a new one
-  this.getDescription=function(){
+  this.getDescription=function(mid){
     if(this.description){
       return this.description;
     }else{
       SearchWiki(this);
-      return "No results found";
+      return "";
     }
   };
   dataModel.locations[id].view=this;
@@ -104,7 +91,6 @@ var viewModel={
   searchBox: new SearchBox(),
   results: ko.observableArray(),
   locationGroup: ko.observableArray(),
-  infoText: new InfoWindow(),
   notOnline: ko.observable()
 };
 
@@ -191,15 +177,20 @@ function SearchWiki(location){
       string=string.slice(string.indexOf(".")+2,string.length);
     // add value to data model
     dataModel.locations[id].view.description=string;
-    // add value to view model
-    viewModel.infoText.enabled(true);
-    viewModel.infoText.contents(string);
+    // close infoo window if already open
+    CloseInfo();
+    // open new info window
+    infoWindow=new google.maps.InfoWindow({
+      content: string
+    });
+    infoWindow.open(mapElement, GetMarker(id));
   })
   .fail(function() {
     alert("Wikipedia search failed!");
   });
 }
-// these don't work http://stackoverflow.com/questions/11044694/how-to-detect-ajax-call-failure-due-to-network-disconnected
+// this don't work if connection is lost
+// http://stackoverflow.com/questions/11044694/how-to-detect-ajax-call-failure-due-to-network-disconnected
 
 // add new location to the list
 function AddLocation(loc){

@@ -134,7 +134,7 @@ function FocusMarker(mId){
     for (var i = 0; i < len; i++) {
       markers[i].setVisible(true);
       markers[i].setIcon(regularPin);
-    };
+    }
     for (var i=0; i < markers.length; i++) {
       bounds.extend(markers[i].getPosition());
     }
@@ -161,7 +161,7 @@ function FocusMarker(mId){
       }
       // fit the map to the new set of markers
       FocusBounds();
-      if(mId.length=1){
+      if(mId.length==1){
         ZoomSingleMarker();
       }
     }else{  // if single marker is passed
@@ -170,7 +170,7 @@ function FocusMarker(mId){
         mId=mId.getAttribute("data-loc-id");
       }
       // loop through markers and extend bounds if marker matches
-      var len=markers.length
+      var len=markers.length;
       for (var i=0; i < len; i++) {
         if(markers[i].mId==mId){
           bounds.extend(markers[i].getPosition());
@@ -212,8 +212,8 @@ function GetMarker(id){
   for (var i = 0; i < len; i++) {
     if(markers[i].mId==id){
       return markers[i];
-    };
-  };
+    }
+  }
 }
 
 // close info window
